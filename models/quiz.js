@@ -52,6 +52,5 @@ quizSchema.virtual('likesPercentage').get(function () {
 quizSchema.set('toObject', { virtuals: true });
 quizSchema.set('toJSON', { virtuals: true });
 
-const Quiz = mongoose.model('Quiz', quizSchema);
-
+const Quiz = mongoose.models.Quiz || mongoose.model("Quiz", quizSchema);
 module.exports = Quiz;

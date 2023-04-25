@@ -42,27 +42,26 @@ function CreateQuiz() {
   };
 
   const saveQuiz = () => {
-    if (window.confirm('Please double and triple check your questions and answers. Are you ready to submit the quiz?')) {
-      quiz.author = 'John Doe';
-      console.log('quiz object:', quiz);
-      axios
-        .post('/api/quizzes', quiz)
-        .then((response) => {
-          alert('Quiz saved successfully');
-          // Handle any additional actions on success
-        })
-        .catch((error) => {
-          if (error.response) {
-            alert(`We are sorry, but your quiz could not be saved. Error: ${error.response.status}`);
-          } else {
-            alert('We are sorry, but your quiz could not be saved. An unexpected error occurred.');
-          }
-          // Handle any additional actions on error
-        });
-    } else {
-      // Redirect the user to the "Edit Questions" page
+    quiz.author = 'unoits6fo';
+  
+    axios
+      .post('/api/quizzes', quiz)
+      .then((response) => {
+        // Navigate to the "Edit Questions" page on success
         navigate('/edit-questions', { state: { questions: quiz.questions } });
-    }
+      })
+      .catch((error) => {
+        if (error.response) {
+          alert(
+            `We are sorry, but your quiz could not be saved. Error: ${error.response.status}`
+          );
+        } else {
+          alert(
+            'We are sorry, but your quiz could not be saved. An unexpected error occurred.'
+          );
+        }
+        // Handle any additional actions on error
+      });
   };
 
   const handleNextStep = () => {
