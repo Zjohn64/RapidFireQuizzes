@@ -3,14 +3,14 @@ const { Schema } = mongoose;
 
 const quizSchema = new Schema({
     name: { type: String, required: true },
-    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    author: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },  
     genre: { type: String, required: true },
     categories: [{ type: String }],
     questions: [
         {
-          question: { type: String, required: true },
+          questionText: { type: String, required: true },
           answers: [{ type: String, required: true }],
           correctAnswer: { type: String, required: true },
           difficulty: { type: Number, required: true },

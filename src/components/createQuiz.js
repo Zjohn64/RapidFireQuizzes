@@ -43,6 +43,7 @@ function CreateQuiz() {
 
   const saveQuiz = () => {
     if (window.confirm('Please double and triple check your questions and answers. Are you ready to submit the quiz?')) {
+      quiz.author = 'John Doe';
       console.log('quiz object:', quiz);
       axios
         .post('/api/quizzes', quiz)
