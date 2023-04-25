@@ -34,6 +34,10 @@ app.use('/', express.static(path.join(__dirname, 'views')))
 
 app.use('/', require('./routes/root'))
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {

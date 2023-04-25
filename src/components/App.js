@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <div>
-        <h1>Create a Quiz</h1>
+        <h1>Rapid Fire Quizzes</h1>
         <Routes>
           <Route path="/" element={<CreateQuiz />} exact />
           <Route path="/edit-questions" element={<EditQuestions />} exact />

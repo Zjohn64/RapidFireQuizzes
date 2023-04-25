@@ -2,6 +2,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    position:absolute;
+    top:0px;
   }
   
   .question-box {

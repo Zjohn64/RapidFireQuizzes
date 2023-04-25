@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import ('./EditQuestions.css')
 
 
-const EditQuestions = () => {
+const EditQuestions = (props) => {
   const location = useLocation();
   const questions = location.state.questions;
 
