@@ -1,20 +1,22 @@
-require('dotenv').config()
+require('dotenv').config();
 const mongoose = require('mongoose');
-const express = require('express')
-const app = express()
-const path = require('path')
-const { logger } = require('./middleware/logger')
-const errorHandler = require('./middleware/errorhandler')
-const cookieParser = require('cookie-parser')
+const express = require('express');
+const app = express();
+const path = require('path');
+const { logger } = require('./middleware/logger');
+const errorHandler = require('./middleware/errorhandler');
+const cookieParser = require('cookie-parser');
+const quizRoutes = require('./routes/quizRoutes');
 const Quiz = require('./models/quiz');
-const cors = require('cors')
-const corsOptions = require('./config/corsOptions')
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
 const PORT = process.env.PORT || 3000
 
 mongoose.connect(process.env.DATABASE_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
+
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -33,6 +35,8 @@ app.use(cookieParser())
 app.use('/', express.static(path.join(__dirname, 'views')))
 
 app.use('/', require('./routes/root'))
+
+app.use('/api/quizzes/:id', quizRoutes);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));

@@ -1,11 +1,29 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import ('./EditQuestions.css')
-
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import './EditQuestions.css';
 
 const EditQuestions = (props) => {
+  const { id } = useParams();
   const location = useLocation();
-  const questions = location.state.questions;
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const response = await axios.get(`/api/quizzes/${id}`);
+        setQuestions(response.data.questions);
+      } catch (error) {
+        console.error('Error fetching quiz:', error);
+      }
+    };
+
+    if (id && !location.state) {
+      fetchQuiz();
+    } else if (location.state && location.state.questions) {
+      setQuestions(location.state.questions);
+    }
+  }, [id, location.state]);
 
   return (
     <div className="container">

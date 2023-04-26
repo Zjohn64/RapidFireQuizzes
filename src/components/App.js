@@ -11,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CreateQuiz />} exact />
           <Route path="/edit-questions" element={<EditQuestions />} exact />
+          <Route path="/edit-questions/:id" element={<EditQuestions />} />
         </Routes>
       </div>
     </Router>
