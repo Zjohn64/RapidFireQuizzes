@@ -25,6 +25,13 @@ const EditQuestions = (props) => {
     }
   }, [id, location.state]);
 
+  const difficultyLookup = {
+    1: "Easy",
+    1.2: "Intermediate",
+    1.5: "Hard",
+    2.0: "Expert",
+  };
+
   return (
     <div className="container">
       {questions.map((question, index) => (
@@ -38,7 +45,7 @@ const EditQuestions = (props) => {
             ))}
           </ul>
           <p>Correct Answer: {question.correctAnswer}</p>
-          <p>Difficulty: {question.difficulty}</p>
+          <p>Difficulty: {difficultyLookup[question.difficulty]}</p>
         </div>
       ))}
     </div>
