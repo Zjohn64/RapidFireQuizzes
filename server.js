@@ -10,6 +10,8 @@ const quizRoutes = require('./routes/quizRoutes');
 const Quiz = require('./models/quiz');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
+const passport = require('passport');
+const session = require('express-session');
 const PORT = process.env.PORT || 3000
 
 mongoose.connect(process.env.DATABASE_URI, {
@@ -32,11 +34,32 @@ app.use(express.json())
 
 app.use(cookieParser())
 
+app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+  require('./passport-config')(passport);
+  app.use(passport.initialize());
+  app.use(passport.session());
+
 app.use('/', express.static(path.join(__dirname, 'views')))
 
 app.use('/', require('./routes/root'))
 
 app.use('/api/quizzes/:id', quizRoutes);
+
+app.post('/auth/local', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+app.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));

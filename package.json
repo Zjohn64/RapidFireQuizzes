@@ -20,6 +20,10 @@
     "mongodb": "^5.3.0",
     "mongoose": "^7.0.3",
     "mongoose-sequence": "^5.3.1",
+    "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
     "react-router-dom": "^6.10.0",
     "uuid": "^9.0.0"
   },
