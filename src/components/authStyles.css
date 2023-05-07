@@ -1,0 +1,78 @@
+.reg-card {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .reg-card input,
+  .reg-card select {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .reg-card button {
+    background-color: #4caf50;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+  }
+  
+  .reg-card button:hover {
+    background-color: #45a049;
+  }
+
+  .reg-card input.error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  .message.success {
+    background-color: green;
+    color: white;
+  }
+  
+  .message.error {
+    background-color: red;
+    color: white;
+    width: 96%;
+  }
+
+  .login-link {
+    display: inline-block;
+    margin-top: 8px;
+    cursor: pointer;
+  }
+
+  .login-link {
+    display: inline-block;
+    margin-top: 8px;
+    text-decoration: underline;
+    cursor: pointer;
+  }

@@ -6,10 +6,10 @@ const bcrypt = require('bcrypt');
 
 module.exports = (passport) => {
   passport.use(
-    new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+    new LocalStrategy({ usernameField: 'identifier', passwordField: 'password' }, async (identifier, password, done) => {
       console.log('Inside LocalStrategy');
       try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ $or: [{ email: identifier }, { username: identifier }] });
         console.log('User:', user);
         if (!user) {
           return done(null, false, { message: 'Incorrect email or password.' });
