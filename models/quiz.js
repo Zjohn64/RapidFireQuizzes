@@ -7,7 +7,8 @@ const quizSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },  
     genre: { type: String, required: true },
-    categories: [{ type: String }],
+    category: { type: String },
+    subCategories: [{ type: String }],
     questions: [
         {
           questionText: { type: String, required: true },

@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../authStyles.css';
+import AuthContext from '../authContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({ identifier: '', password: '' });
   const navigate = useNavigate();
   const [message, setMessage] = useState({ general: "" });
+  const { setAuthState } = useContext(AuthContext);
+  const location = useLocation();
+  const fromRegistration = location.state?.fromRegistration;
 
 
   const handleChange = (e) => {
@@ -21,23 +25,30 @@ const Login = () => {
     try {
       const response = await axios.post("/api/users/login", formData);
       console.log("Login successful:", response);
-      // Redirect to dashboard after successful login
-      navigate("/dashboard");
-    } catch (err) {
-        console.error(err);
-        if (err.response) {
-            const errorData = err.response.data;
-          
-            if (errorData.message) {
-              setMessage({ general: errorData.message });
-            }
-          } else {
-            console.error("Error during login:", err);
-          }
-    
-        setFormData({ identifier: '', password: '' });
+  
+      setAuthState({ user: response.data.user, isAuthenticated: true });
+  
+      if (fromRegistration) {
+        navigate('/');
+      } else {
+        navigate(-1);
       }
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        const errorData = err.response.data;
+  
+        if (errorData.message) {
+          setMessage({ general: errorData.message });
+        }
+      } else {
+        console.error("Error during login:", err);
+      }
+  
+      setFormData({ identifier: '', password: '' });
+    }
   };
+
   return (
     <div className="reg-card">
       <h1>Login</h1>

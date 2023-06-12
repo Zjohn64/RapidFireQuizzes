@@ -45,6 +45,16 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching user data" });
+  }
+});
+
 router.get('/profile', isAuthenticated, getProfile)
 
 module.exports = router;

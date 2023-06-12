@@ -10,7 +10,7 @@ function CreateQuiz() {
     name: '',
     genre: '',
     category: '',
-    subCategories: '', 
+    subCategories: [], 
     questions: [],
   });
 
@@ -42,13 +42,13 @@ function CreateQuiz() {
   };
 
   const saveQuiz = () => {
-    quiz.author = 'unoits6fo';
-  
     axios
       .post('/api/quizzes', quiz)
       .then((response) => {
-        // Navigate to the "Edit Questions" page on success
-        navigate('/edit-questions', { state: { questions: quiz.questions } });
+        const savedQuizId = response.data._id;
+
+        // Navigate to the "Edit Questions" page with the saved quiz ID in the URL
+        navigate(`/edit-questions/${savedQuizId}`, { state: { questions: quiz.questions } });
       })
       .catch((error) => {
         if (error.response) {
@@ -121,9 +121,7 @@ function CreateQuiz() {
             <input
               type="text"
               value={quiz.subCategories}
-              onChange={(e) =>
-                setQuiz({ ...quiz, subCategories: e.target.value })
-              }
+              onChange={(e) => setQuiz({ ...quiz, subCategories: e.target.value.split(',').map((cat) => cat.trim()) })}
             />
           </label>
           <button onClick={handleNextStep}>Enter Questions</button>

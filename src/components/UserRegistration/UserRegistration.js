@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../authStyles.css'
 const UserRegistration = () => {
+    const navigate = useNavigate();
     const [isSuccess, setIsSuccess] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -59,6 +60,10 @@ const UserRegistration = () => {
         const response = await axios.post("/api/users/register", formData);
         setMessage(response.data.message);
         setIsSuccess(true);
+
+        setTimeout(() => {
+          navigate('/login', { state: { fromRegistration: true } });s
+        }, 500);
       } catch (error) {
         console.error("Error during registration:", error);
         setIsSuccess(false);
