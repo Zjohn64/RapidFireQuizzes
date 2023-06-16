@@ -1,60 +1,80 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './EditQuestions.css';
 import { useAuth } from '../authContext';
 
-const EditQuestions = (props) => {
+const EditQuestions = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { user, isAuthenticated } = useAuth();
-  // const { authState } = useContext(AuthContext);
-  // const { isAuthenticated } = authState;
+  const { authState, setAuthState } = useAuth();
+  const { user, isAuthenticated } = authState;  
   const [questions, setQuestions] = useState([]);
   const [editing, setEditing] = useState(null);
   const [modified, setModified] = useState(false);
   const [quizInfo, setQuizInfo] = useState({ name: '', author: '', genre: '', categories: [] });
   const [userQuizzes, setUserQuizzes] = useState([]);
-  
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log("authState in EditQuestions:", authState)
+  console.log("User quizzes", userQuizzes);
 
   const fetchQuizzesByUserId = async (userId) => {
     try {
-      const response = await axios.get(`/api/quizzes?author=${userId}`);
+      const response = await axios.get(`http://localhost:3000/api/quizzes/by-user/${userId}`);
       setUserQuizzes(response.data);
       console.log("User Quizzes:", response.data);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     }
   };
+  
+  const fetchQuiz = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`/api/quizzes/${id}`);
+      setQuestions(response.data.questions);
+  
+      const authorId = response.data.author._id || response.data.author;
+      const authorResponse = await axios.get(`/api/users/${authorId}`);
+      let authorUsername = '';
+      if (authorResponse.data) {
+        authorUsername = authorResponse.data.username;
+      } else {
+        console.log('authorResponse.data is undefined');
+      }
+  
+      setQuizInfo({
+        name: response.data.name,
+        author: authorUsername,
+        genre: response.data.genre,
+        category: response.data.category,
+        subCategories: response.data.subCategories,
+      });
+      console.log("Fetched quizInfo:", {
+        name: response.data.name,
+        author: authorUsername,
+        genre: response.data.genre,
+        category: response.data.category,
+        subCategories: response.data.subCategories,
+      });
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+    }
+    setIsLoading(false);
+  }, [id]);
 
   useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const response = await axios.get(`/api/quizzes/${id}`);
-        setQuestions(response.data.questions);
-
-        const authorId = response.data.author._id || response.data.author;
-        const authorResponse = await axios.get(`/api/users/${authorId}`);
-        const authorUsername = authorResponse.data.username;
-
-        setQuizInfo({
-          name: response.data.name,
-          author: authorUsername,
-          genre: response.data.genre,
-          category: response.data.category, // Change this line
-          subCategories: response.data.subCategories, // Change this line
-        });
-      } catch (error) {
-        console.error('Error fetching quiz:', error);
-      }
-    };
-  
-    if (id && !location.state) {
-      fetchQuiz();
-    } else if (location.state && location.state.questions) {
+    if (location.state && location.state.questions) {
       setQuestions(location.state.questions);
+      setIsLoading(false);
+      console.log("Fetching quizzes for user:", user._id);
+    } else if (id) {
+      fetchQuiz();
+    } else {
+      setIsLoading(false);
     }
-  }, [id, location.state]);
+  }, [id, location.state, fetchQuiz]);
 
   const difficultyLookup = {
     1: "Easy",
@@ -64,11 +84,12 @@ const EditQuestions = (props) => {
   };
 
   useEffect(() => {
-    if (user && isAuthenticated) {
-      console.log('Fetching quizzes for user:', user._id); 
+    if (user && user._id && isAuthenticated) {
+      console.log('Fetching quizzes for user:', user._id);
       fetchQuizzesByUserId(user._id);
     } else {
-      setUserQuizzes([]); // Clear user quizzes when not authenticated
+      console.log('User or user ID is undefined:', user);
+      setUserQuizzes([]);
     }
   }, [user, isAuthenticated]);
 
@@ -83,7 +104,7 @@ const EditQuestions = (props) => {
     setEditing(index);
   };
 
-  const handleSave = async (questionIndex) => {
+  const handleSave = async () => {
     if (modified) {
       try {
         const updatedQuiz = await axios.put(`/api/quizzes/${id}`, {
@@ -112,7 +133,11 @@ const EditQuestions = (props) => {
     setModified(true);
   };
 
-  if (!isAuthenticated) {
+  if (isLoading) {
+    return <div>Loading...</div>; 
+  }
+
+  if (!authState.isAuthenticated)  {
     return (
       <div className="popup">
         <h2>Login to edit your quizzes</h2>
@@ -122,6 +147,12 @@ const EditQuestions = (props) => {
       </div>
     );
   }
+
+  // Just before your return statement:
+console.log("Current user:", user);
+console.log("Quiz Info:", quizInfo);
+console.log("User quizzes:", userQuizzes);
+console.log("Is user authenticated?:", isAuthenticated);
 
   return (
     <div>
@@ -164,7 +195,7 @@ const EditQuestions = (props) => {
         </Link>
       </div>
     )}
-    {quizInfo.name && user.username === quizInfo.author && (
+    {user && quizInfo && quizInfo?.name && user?.username === quizInfo?.author && (
       <div className="container">
         <div className="info-box">
           <h2>{quizInfo.name}</h2>

@@ -2,13 +2,13 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../authStyles.css';
-import AuthContext from '../authContext';
+import { useAuth} from '../authContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({ identifier: '', password: '' });
   const navigate = useNavigate();
   const [message, setMessage] = useState({ general: "" });
-  const { setAuthState } = useContext(AuthContext);
+  const { authState, setAuthState } = useAuth();
   const location = useLocation();
   const fromRegistration = location.state?.fromRegistration;
 
@@ -27,6 +27,8 @@ const Login = () => {
       console.log("Login successful:", response);
   
       setAuthState({ user: response.data.user, isAuthenticated: true });
+
+      console.log("Updated authState after login:", authState);
   
       if (fromRegistration) {
         navigate('/');
@@ -44,7 +46,6 @@ const Login = () => {
       } else {
         console.error("Error during login:", err);
       }
-  
       setFormData({ identifier: '', password: '' });
     }
   };

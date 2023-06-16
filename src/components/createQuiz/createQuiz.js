@@ -5,6 +5,7 @@ import axios from 'axios';
 function CreateQuiz() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [subCategoriesInput, setSubCategoriesInput] = useState('');
 
   const [quiz, setQuiz] = useState({
     name: '',
@@ -20,6 +21,7 @@ function CreateQuiz() {
     correctAnswer: '',
     difficulty: '',
   });
+
 
   useEffect(() => {
     console.log(quiz.questions);
@@ -43,29 +45,30 @@ function CreateQuiz() {
 
   const saveQuiz = () => {
     axios
-      .post('/api/quizzes', quiz)
-      .then((response) => {
-        const savedQuizId = response.data._id;
-
-        // Navigate to the "Edit Questions" page with the saved quiz ID in the URL
-        navigate(`/edit-questions/${savedQuizId}`, { state: { questions: quiz.questions } });
-      })
-      .catch((error) => {
-        if (error.response) {
-          alert(
-            `We are sorry, but your quiz could not be saved. Error: ${error.response.status}`
-          );
-        } else {
-          alert(
-            'We are sorry, but your quiz could not be saved. An unexpected error occurred.'
-          );
-        }
-        // Handle any additional actions on error
-      });
+    .post('/api/quizzes', quiz)
+    .then((response) => {
+      const savedQuizId = response.data._id;
+      navigate(`/edit-questions/${savedQuizId}`, { state: { questions: quiz.questions } });
+    })
+    .catch((error) => {
+      if (error.response) {
+        alert(
+          `We are sorry, but your quiz could not be saved. Error: ${error.response.status}`
+        );
+      } else {
+        alert(
+          'We are sorry, but your quiz could not be saved. An unexpected error occurred.'
+        );
+      }
+    });
   };
 
   const handleNextStep = () => {
     setStep(step + 1);
+
+    const processedSubCategories = subCategoriesInput.split(',').map((cat) => cat.trim());
+    setQuiz({ ...quiz, subCategories: processedSubCategories });
+
   };
 
   const canPushQuestion = () => {
@@ -120,8 +123,8 @@ function CreateQuiz() {
             Sub-categories (optional):
             <input
               type="text"
-              value={quiz.subCategories}
-              onChange={(e) => setQuiz({ ...quiz, subCategories: e.target.value.split(',').map((cat) => cat.trim()) })}
+              value={subCategoriesInput}
+              onChange={(e) => setSubCategoriesInput(e.target.value)}
             />
           </label>
           <button onClick={handleNextStep}>Enter Questions</button>

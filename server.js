@@ -55,7 +55,7 @@ app.use('/', express.static(path.join(__dirname, 'views')))
 
 app.use('/', require('./routes/root'))
 
-app.use('/api/quizzes/:id', quizRoutes);
+app.use('/api/quizzes', quizRoutes);
 
 app.use('/api/users', userRoutes);
 
