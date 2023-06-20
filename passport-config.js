@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 module.exports = (passport) => {
   passport.use(
     new LocalStrategy({ usernameField: 'identifier', passwordField: 'password' }, async (identifier, password, done) => {
-      console.log('Inside LocalStrategy');
       try {
         const user = await User.findOne({ $or: [{ email: identifier }, { username: identifier }] });
         console.log('User:', user);

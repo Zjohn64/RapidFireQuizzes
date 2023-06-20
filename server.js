@@ -65,6 +65,14 @@ app.get('/auth/google/callback', passport.authenticate('google', { successRedire
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
 
+app.get('/api/auth/check', (req, res) => {
+    if (req.isAuthenticated()) {
+      res.json({ isAuthenticated: true, user: req.user });
+    } else {
+      res.json({ isAuthenticated: false });
+    }
+  });
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
